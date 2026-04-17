@@ -1,3 +1,4 @@
 .env
 results.csv
 *.zip
+build_result
