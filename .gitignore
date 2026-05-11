@@ -1,6 +1,7 @@
 .env
 results.csv
 *.zip
+~$*.xlsx
 build_result
 __pycache__
 .idea
