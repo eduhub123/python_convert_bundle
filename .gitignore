@@ -2,3 +2,5 @@
 results.csv
 *.zip
 build_result
+__pycache__
+.idea
