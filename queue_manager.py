@@ -49,8 +49,7 @@ class RabbitMQQueueManager:
                 port=int(os.getenv('RABBITMQ_PORT')),
                 credentials=credentials,
                 heartbeat=600,
-                blocked_connection_timeout=600,
-                socket_timeout=10
+                blocked_connection_timeout=600
             )
             
             self.connection = pika.BlockingConnection(parameters)

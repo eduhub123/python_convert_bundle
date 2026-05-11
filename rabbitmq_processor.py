@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 from file_handle import main_process, CustomException, evaluate_process_time, noti_to_tele
 from convert import delete_zip_file, insert_result_to_es, move_file_to_dead_letter
 
-max_retry = 3
 # Cấu hình logging
 logging.basicConfig(
     level=logging.INFO,
@@ -414,11 +413,10 @@ def connect_to_rabbitmq():
                 host=os.getenv("RABBITMQ_HOST"),
                 port=int(os.getenv("RABBITMQ_PORT")),
                 credentials=credentials,
-                heartbeat=600,  # Heartbeat mỗi 30 giây
-                blocked_connection_timeout=600,  # Timeout sau 30 giây nếu connection bị block
-                socket_timeout=10,  # Timeout cho socket operations
-                connection_attempts=3,  # Số lần thử kết nối
-                retry_delay=5  # Delay 5 giây giữa các lần retry
+                heartbeat=600,
+                blocked_connection_timeout=600,
+                connection_attempts=3,
+                retry_delay=5
             )
             
             logger.info(f"Connecting to RabbitMQ at {os.getenv('RABBITMQ_HOST')}:{os.getenv('RABBITMQ_PORT')}")

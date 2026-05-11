@@ -101,7 +101,7 @@ def build_asset_bundle():
     start = time.time()
     logger.info(step)
 
-    args = "/Applications/Unity/Hub/Editor/2022.1.20f1/Unity.app/Contents/MacOS/Unity -executeMethod CreateAssetBundles.BuildDataToBundles -projectPath /Users/hungtd2002/Documents/Monkey/Projects/MonkeyXAssetBunldeBuilder/AssetBunldeBuilder -batchmode -quit"
+    args = f"{os.getenv('UNITY_PATH')} -executeMethod CreateAssetBundles.BuildDataToBundles -projectPath {os.getenv('UNITY_PROJECT_PATH')} -batchmode -quit"
 
     try:
         # Sử dụng Popen thay vì call để không block process chính
@@ -146,7 +146,7 @@ def build_asset_conversation_video():
     start = time.time()
     logger.info(step)
 
-    args = "/Applications/Unity/Hub/Editor/2022.1.20f1/Unity.app/Contents/MacOS/Unity -executeMethod CreateAssetBundles.BuildDataToBundlesVideoCall -projectPath /Users/hungtd2002/Documents/Monkey/Projects/MonkeyXAssetBunldeBuilder/AssetBunldeBuilder -batchmode -quit"
+    args = f"{os.getenv('UNITY_PATH')} -executeMethod CreateAssetBundles.BuildDataToBundlesVideoCall -projectPath {os.getenv('UNITY_PROJECT_PATH')} -batchmode -quit"
 
     try:
         process = subprocess.Popen(
@@ -187,7 +187,7 @@ def build_asset_bundle_low_rez():
     start = time.time()
     logger.info(step)
 
-    args = "/Applications/Unity/Hub/Editor/2022.1.20f1/Unity.app/Contents/MacOS/Unity -executeMethod CreateAssetBundles.BuildDataToBundlesLowRez -projectPath /Users/hungtd2002/Documents/Monkey/Projects/MonkeyXAssetBunldeBuilder/AssetBunldeBuilder -batchmode -quit"
+    args = f"{os.getenv('UNITY_PATH')} -executeMethod CreateAssetBundles.BuildDataToBundlesLowRez -projectPath {os.getenv('UNITY_PROJECT_PATH')} -batchmode -quit"
 
     try:
         process = subprocess.Popen(
@@ -228,7 +228,7 @@ def build_asset_addressables():
     start = time.time()
     logger.info(step)
 
-    args = "/Applications/Unity/Hub/Editor/2022.1.20f1/Unity.app/Contents/MacOS/Unity -executeMethod CreateAddressables.ExportBundles -projectPath /Users/hungtd2002/Documents/Monkey/Projects/MonkeyXAssetBunldeBuilder/AssetBunldeBuilder -batchmode -quit"
+    args = f"{os.getenv('UNITY_PATH')} -executeMethod CreateAddressables.ExportBundles -projectPath {os.getenv('UNITY_PROJECT_PATH')} -batchmode -quit"
 
     try:
         process = subprocess.Popen(
@@ -464,10 +464,10 @@ def main_process(file_path, folderItem):
         return done_message, total_time_taken, upload[0], upload[1]
     except CustomException as ce:
         noti_to_tele("Failed: " + file_name +" Error: "+ ce.message)
-        return fail_message
+        return fail_message, 0, "", ""
     except Exception as e:
         noti_to_tele("Failed: " + file_name +" Error: "+ str(e))
-        return fail_message
+        return fail_message, 0, "", ""
 
 def build_asset_bundle_with_timeout(timeout_seconds=600):  # Default 10 minutes timeout
     """Build Unity bundle với timeout
