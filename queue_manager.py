@@ -44,12 +44,19 @@ class RabbitMQQueueManager:
                 os.getenv('RABBITMQ_USER'),
                 os.getenv('RABBITMQ_PASSWORD')
             )
+            # heartbeat=60 + tcp keepalive: giữ connection alive qua NAT
+            # (Azure NAT idle timeout ~4 phút). Xem rabbitmq_processor.py.
             parameters = pika.ConnectionParameters(
                 host=os.getenv('RABBITMQ_HOST'),
                 port=int(os.getenv('RABBITMQ_PORT')),
                 credentials=credentials,
-                heartbeat=600,
-                blocked_connection_timeout=600
+                heartbeat=60,
+                blocked_connection_timeout=300,
+                tcp_options={
+                    'TCP_KEEPIDLE': 60,
+                    'TCP_KEEPINTVL': 20,
+                    'TCP_KEEPCNT': 5,
+                },
             )
             
             self.connection = pika.BlockingConnection(parameters)

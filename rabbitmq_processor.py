@@ -409,14 +409,22 @@ def connect_to_rabbitmq():
                 continue
                 
             credentials = pika.PlainCredentials(username, password)
+            # heartbeat=60: pika gửi frame mỗi ~30s, ngắn hơn Azure NAT idle
+            # timeout (~4 phút) nên giữ connection alive khi queue idle. Trước
+            # đây heartbeat=600 → gửi mỗi 300s, NAT drop trước → recv timeout.
             parameters = pika.ConnectionParameters(
                 host=os.getenv("RABBITMQ_HOST"),
                 port=int(os.getenv("RABBITMQ_PORT")),
                 credentials=credentials,
-                heartbeat=600,
-                blocked_connection_timeout=600,
+                heartbeat=60,
+                blocked_connection_timeout=300,
                 connection_attempts=3,
-                retry_delay=5
+                retry_delay=5,
+                tcp_options={
+                    'TCP_KEEPIDLE': 60,
+                    'TCP_KEEPINTVL': 20,
+                    'TCP_KEEPCNT': 5,
+                },
             )
             
             logger.info(f"Connecting to RabbitMQ at {os.getenv('RABBITMQ_HOST')}:{os.getenv('RABBITMQ_PORT')}")
